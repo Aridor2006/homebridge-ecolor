@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "ecolor",
   "pluginType": "platform",
   "singular": true,
   "schema": {

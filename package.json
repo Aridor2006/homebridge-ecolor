@@ -1,16 +1,16 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
+  "displayName": "Homebridge Ecolor",
+  "name": "homebridge-ecolor",
   "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "description": "Provides integration to Ecolor smart lighting devices.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "https://github.com/Aridor2006/homebridge-ecolor.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/Aridor2006/homebridge-ecolor/issues"
   },
   "engines": {
     "node": ">=14.18.1",
