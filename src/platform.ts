@@ -50,9 +50,6 @@ export class EcolorHomebridgePlatform implements DynamicPlatformPlugin {
     this.log.debug('pluginsetup');
     this.log.debug('restored accessories: ', this.accessories.length);
 
-    this.log.debug('x: ', this.accessories[0].context.device);
-
-
     if (this.ecolorApi !== undefined) {
       await this.ecolorApi.login();
       const devices = await this.ecolorApi.getDevices();
