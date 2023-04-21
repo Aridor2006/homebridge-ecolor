@@ -5,11 +5,35 @@
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
+      "username": {
+        "title": "Ecolor Life Username",
         "type": "string",
-        "required": true,
-        "default": "Example Dynamic Platform"
+        "description": "Enter your Ecolor Life username to enable cloud devices."
+      },
+      "password": {
+        "title": "Ecolor Life Password",
+        "type": "string",
+        "description": "Enter your Ecolor Life password to enable cloud devices."
+      },
+      "mqttUrl": {
+        "title": "Ecolor Life Mqtt Url",
+        "type": "string",
+        "description": "TBD"
+      },
+      "ca": {
+        "title": "Ecolor Life CA",
+        "type": "string",
+        "description": "TBD"
+      },
+      "clientCert": {
+        "title": "Ecolor Life Client Certificate",
+        "type": "string",
+        "description": "TBD"
+      },
+      "clientKey": {
+        "title": "Ecolor Life Client Key",
+        "type": "string",
+        "description": "TBD"
       }
     }
   }
