@@ -12,15 +12,9 @@ import crypto from 'crypto';
  */
 export class EcolorPlatformAccessory {
   private service: Service;
+  private hue?: number;
+  private saturation?: number;
 
-  /**
-   * These are just used to create a working example
-   * You should implement your own code to track the state of your accessory
-   */
-  private exampleStates = {
-    On: false,
-    Brightness: 100,
-  };
 
   client: EcolorMqtt;
 
@@ -67,6 +61,13 @@ export class EcolorPlatformAccessory {
     this.service.getCharacteristic(this.platform.Characteristic.Brightness)
       .onSet(this.setBrightness.bind(this));       // SET - bind to the 'setBrightness` method below
 
+    this.service.getCharacteristic(this.platform.Characteristic.Hue)
+      .onSet(this.setHue.bind(this));
+    this.service.getCharacteristic(this.platform.Characteristic.Saturation)
+      .onSet(this.setSaturation.bind(this));
+    this.service.getCharacteristic(this.platform.Characteristic.ColorTemperature)
+      .onSet(this.setColorTemperature.bind(this));
+
   }
 
   cleanup() {
@@ -78,9 +79,6 @@ export class EcolorPlatformAccessory {
    * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
    */
   async setOn(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    this.exampleStates.On = value as boolean;
-
     if (value as boolean === true) {
       this.client.sendMessage(Command.On);
     } else {
@@ -123,9 +121,6 @@ export class EcolorPlatformAccessory {
    * These are sent when the user changes the state of an accessory, for example, changing the Brightness
    */
   async setBrightness(value: CharacteristicValue) {
-    // implement your own code to set the brightness
-    this.exampleStates.Brightness = value as number;
-
     const msg = Buffer.from([170, 3, value as number]).toString('base64');
     this.platform.log.debug('Sendin bring ', msg);
     this.client.sendMessage(msg);
@@ -133,4 +128,74 @@ export class EcolorPlatformAccessory {
     this.platform.log.debug('Set Characteristic Brightness -> ', value);
   }
 
+  async setHue(value: CharacteristicValue) {
+    this.platform.log.debug('Hue: ', value);
+    this.hue = value as number;
+    this.handleColor();
+  }
+
+  async setSaturation(value: CharacteristicValue) {
+    this.platform.log.debug('Saturation: ', value);
+    this.saturation = value as number;
+    this.handleColor();
+  }
+
+  async setColorTemperature(value: CharacteristicValue) {
+    this.platform.log.debug('ColorTemp: ', value);
+  }
+
+  handleColor() {
+    if (this.hue === undefined || this.saturation === undefined) {
+      return;
+    }
+
+    const rgb = hs2rgb(this.hue, this.saturation);
+
+    this.platform.log.debug('RGB', rgb);
+
+    const msg = Buffer.from([170, 4, 17, 1, rgb[0], rgb[1], rgb[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).toString('base64');
+    this.client.sendMessage(msg);
+  }
+
 }
+
+const hs2rgb = (h, s) => {
+  /*
+      Credit:
+      https://github.com/WickyNilliams/pure-color
+    */
+  h = parseInt(h, 10) / 60;
+  s = parseInt(s, 10) / 100;
+  const f = h - Math.floor(h);
+  const p = 255 * (1 - s);
+  const q = 255 * (1 - s * f);
+  const t = 255 * (1 - s * (1 - f));
+  let rgb;
+  switch (Math.floor(h) % 6) {
+    case 0:
+      rgb = [255, t, p];
+      break;
+    case 1:
+      rgb = [q, 255, p];
+      break;
+    case 2:
+      rgb = [p, 255, t];
+      break;
+    case 3:
+      rgb = [p, q, 255];
+      break;
+    case 4:
+      rgb = [t, p, 255];
+      break;
+    case 5:
+      rgb = [255, p, q];
+      break;
+    default:
+      return [];
+  }
+  if (rgb[0] === 255 && rgb[1] <= 25 && rgb[2] <= 25) {
+    rgb[1] = 0;
+    rgb[2] = 0;
+  }
+  return [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])];
+};

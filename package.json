@@ -2,7 +2,7 @@
   "private": false,
   "displayName": "Homebridge Ecolor",
   "name": "homebridge-ecolor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Provides integration to Ecolor smart lighting devices.",
   "license": "Apache-2.0",
   "repository": {
